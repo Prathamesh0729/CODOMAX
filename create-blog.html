@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Create and publish a blog on BlogSpace.">
+
+    <title>BlogSpace | Create Blog</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+
+        <div class="container navbar-container">
+
+            <a href="index.html" class="logo">
+                BlogSpace
+            </a>
+
+            <nav class="nav-links">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="index.html#featured">
+                    Explore
+                </a>
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="create-blog.html" class="nav-button active">
+                    Create Blog
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- Create Blog -->
+    <main class="create-blog-page">
+
+        <div class="container">
+
+            <div class="create-blog-header">
+
+                <p class="section-label">
+                    CREATE
+                </p>
+
+                <h1>
+                    Write Your Blog
+                </h1>
+
+                <p>
+                    Share your knowledge, ideas, and experiences.
+                </p>
+
+            </div>
+
+
+            <form
+                class="blog-form"
+                id="blogForm"
+            >
+
+                <!-- Title -->
+
+                <div class="form-group">
+
+                    <label for="blogTitle">
+                        Blog Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="blogTitle"
+                        placeholder="Enter your blog title"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Category -->
+
+                <div class="form-group">
+
+                    <label for="blogCategory">
+                        Category
+                    </label>
+
+                    <select
+                        id="blogCategory"
+                        required
+                    >
+
+                        <option value="">
+                            Select a category
+                        </option>
+
+                        <option value="Technology">
+                            Technology
+                        </option>
+
+                        <option value="Programming">
+                            Programming
+                        </option>
+
+                        <option value="Design">
+                            Design
+                        </option>
+
+                        <option value="Lifestyle">
+                            Lifestyle
+                        </option>
+
+                        <option value="Education">
+                            Education
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Content -->
+
+                <div class="form-group">
+
+                    <label for="blogContent">
+                        Content
+                    </label>
+
+                    <textarea
+                        id="blogContent"
+                        rows="15"
+                        placeholder="Start writing your blog..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Actions -->
+
+                <div class="blog-form-actions">
+
+                    <a
+                        href="dashboard.html"
+                        class="secondary-button"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                       
