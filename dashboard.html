@@ -1,13 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description" content="Manage your BlogSpace blogs.">
-
-    <title>BlogSpace | Dashboard</title>
+    <meta name="description" content="Manage your BlogSpace articles and account.">
+    <title>My Dashboard | BlogSpace</title>
 
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -16,88 +15,119 @@
 
     <!-- Navigation -->
     <header class="navbar">
+        <div class="nav-container">
 
-        <div class="container navbar-container">
+            <a href="index.html" class="logo">BlogSpace</a>
 
-            <a href="index.html" class="logo">
-                BlogSpace
-            </a>
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
 
-            <nav class="nav-links">
-
-    <a href="index.html">
-        Home
-    </a>
-
-    <a href="index.html#featured">
-        Explore
-    </a>
-
-    <a href="dashboard.html" class="active">
-        Dashboard
-    </a>
-
-    <a href="create-blog.html" class="nav-button">
-        Create Blog
-    </a>
-
-    <a href="#" id="logoutButton">
-        Logout
-    </a>
-
-</nav>
-
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#featured">Explore Blogs</a>
+                <a href="create-blog.html">Write a Blog</a>
+                <a href="dashboard.html" id="dashboardNavLink">Dashboard</a>
+                <a href="login.html" id="loginNavLink">Login</a>
+                <a href="register.html" id="signupNavLink">Sign Up</a>
+                <a href="#" id="logoutButton">Logout</a>
             </nav>
 
         </div>
-
     </header>
-
 
     <!-- Dashboard -->
     <main class="dashboard-page">
 
-        <div class="container">
+        <section class="dashboard-header">
+            <div>
+                <p class="dashboard-subtitle">YOUR SPACE</p>
 
-            <!-- Dashboard Header -->
-            <section class="dashboard-header">
+                <h1>
+                    Welcome back,
+                    <span id="dashboardUserName">Writer</span>!
+                </h1>
 
+                <p>Manage your articles and keep sharing your ideas.</p>
+            </div>
+
+            <a href="create-blog.html" class="primary-button">
+                + Create New Blog
+            </a>
+        </section>
+
+        <!-- Dashboard Statistics -->
+        <section class="dashboard-stats">
+
+            <div class="stat-card">
+                <h3>Total Blogs</h3>
+                <p id="totalBlogs">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Published Blogs</h3>
+                <p id="publishedBlogs">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Drafts</h3>
+                <p id="draftBlogs">0</p>
+            </div>
+
+        </section>
+
+        <!-- Blog Management -->
+        <section class="dashboard-content">
+
+            <div class="dashboard-section-header">
                 <div>
-
-                    <p class="section-label">
-                        DASHBOARD
-                    </p>
-
-                    <h1>
-                        Welcome, <span id="dashboardUserName">Writer</span>
-                    </h1>
-
-                    <p>
-                        Manage your blogs and create something new.
-                    </p>
-
+                    <h2>My Articles</h2>
+                    <p>View, edit, and manage your published blogs.</p>
                 </div>
 
-
-                <a
-                    href="create-blog.html"
-                    class="primary-button"
-                >
-                    + Create Blog
+                <a href="create-blog.html" class="secondary-button">
+                    Write New Article
                 </a>
+            </div>
 
-            </section>
+            <!-- Empty State -->
+            <div
+                id="dashboardEmpty"
+                class="dashboard-empty"
+                style="display: none;"
+            >
+                <h3>No blogs published yet</h3>
+                <p>Your articles will appear here after you publish them.</p>
 
+                <a href="create-blog.html" class="primary-button">
+                    Write Your First Blog
+                </a>
+            </div>
 
-            <!-- Statistics -->
-            <section class="stats-grid">
+            <!-- Blog Cards Render Here -->
+            <div
+                id="blogManagementList"
+                class="blog-management-list"
+            >
+                <p>Loading your blogs...</p>
+            </div>
 
-                <div class="stat-card">
+        </section>
 
-                    <p>
-                        Total Blogs
-                    </p>
+    </main>
 
-                    <h2 id="totalBlogs">
-                        0
-                   
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 BlogSpace. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+
+</body>
+</html>

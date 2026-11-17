@@ -1,15 +1,11 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
         name="description"
@@ -18,35 +14,19 @@
 
     <title>BlogSpace | Home</title>
 
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 
 <body>
 
-    <!-- =========================================
-         NAVIGATION
-    ========================================== -->
-
+    <!-- NAVIGATION -->
     <header class="navbar">
 
         <div class="container navbar-container">
 
-            <!-- LOGO -->
-
-            <a
-                href="index.html"
-                class="logo"
-            >
+            <a href="index.html" class="logo">
                 BlogSpace
             </a>
-
-
-            <!-- MOBILE MENU BUTTON -->
 
             <button
                 class="menu-toggle"
@@ -56,15 +36,10 @@
                 aria-expanded="false"
                 aria-controls="navLinks"
             >
-
                 <span></span>
                 <span></span>
                 <span></span>
-
             </button>
-
-
-            <!-- NAVIGATION LINKS -->
 
             <nav
                 class="nav-links"
@@ -72,26 +47,17 @@
                 aria-label="Main navigation"
             >
 
-                <a
-                    href="index.html"
-                    class="active"
-                >
+                <a href="index.html" class="active">
                     Home
                 </a>
-
 
                 <a href="#featured">
                     Explore
                 </a>
 
-
-                <a
-                    href="login.html"
-                    id="loginNavLink"
-                >
+                <a href="login.html" id="loginNavLink">
                     Login
                 </a>
-
 
                 <a
                     href="register.html"
@@ -101,7 +67,6 @@
                     Sign Up
                 </a>
 
-
                 <a
                     href="dashboard.html"
                     id="dashboardNavLink"
@@ -109,7 +74,6 @@
                 >
                     Dashboard
                 </a>
-
 
                 <a
                     href="#"
@@ -126,17 +90,10 @@
     </header>
 
 
-    <!-- =========================================
-         MAIN CONTENT
-    ========================================== -->
-
+    <!-- MAIN CONTENT -->
     <main>
 
-
-        <!-- =========================================
-             HERO SECTION
-        ========================================== -->
-
+        <!-- HERO SECTION -->
         <section class="hero">
 
             <div class="container hero-content">
@@ -147,26 +104,18 @@
                         WELCOME TO BLOGSPACE
                     </p>
 
-
                     <h1>
-
                         Share Your Ideas
-
                         <span>
                             With The World.
                         </span>
-
                     </h1>
 
-
                     <p class="hero-description">
-
                         Write, publish, and discover
                         meaningful stories from people
                         around the world.
-
                     </p>
-
 
                     <div class="hero-actions">
 
@@ -176,7 +125,6 @@
                         >
                             Start Writing
                         </a>
-
 
                         <a
                             href="#featured"
@@ -194,10 +142,7 @@
         </section>
 
 
-        <!-- =========================================
-             FEATURED BLOGS
-        ========================================== -->
-
+        <!-- FEATURED BLOGS -->
         <section
             class="featured-section"
             id="featured"
@@ -205,46 +150,31 @@
 
             <div class="container">
 
-
-                <!-- SECTION HEADING -->
-
                 <div class="section-heading">
 
                     <p class="section-label">
                         DISCOVER
                     </p>
 
-
                     <h2>
                         Featured Blogs
                     </h2>
 
-
                     <p>
-
                         Explore interesting ideas,
                         stories, and perspectives
                         from our community.
-
                     </p>
 
                 </div>
 
-
-                <!--
-                    Published blogs are inserted
-                    here by main.js.
-                -->
-
+                <!-- Blogs loaded from MongoDB -->
                 <div
                     class="blog-grid"
                     id="homeBlogGrid"
                 >
 
-                    <!--
-                        JavaScript will automatically
-                        add published blog cards here.
-                    -->
+                    <p>Loading blogs...</p>
 
                 </div>
 
@@ -255,23 +185,14 @@
     </main>
 
 
-    <!-- =========================================
-         FOOTER
-    ========================================== -->
-
+    <!-- FOOTER -->
     <footer class="footer">
 
         <div class="container footer-content">
 
-
-            <!-- FOOTER BRAND -->
-
             <div>
 
-                <h3>
-                    BlogSpace
-                </h3>
-
+                <h3>BlogSpace</h3>
 
                 <p>
                     A place to write, share,
@@ -280,14 +201,9 @@
 
             </div>
 
-
-            <!-- COPYRIGHT -->
-
             <p>
-
-                © 2026 BlogSpace.
+                &copy; 2026 BlogSpace.
                 All rights reserved.
-
             </p>
 
         </div>
@@ -295,19 +211,9 @@
     </footer>
 
 
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================== -->
-
-    <!--
-        Keep main.js at the bottom of the body.
-        This ensures that all HTML elements already
-        exist when JavaScript searches for them.
-    -->
-
+    <!-- JAVASCRIPT -->
     <script src="js/main.js"></script>
 
 </body>
 
 </html>
-```

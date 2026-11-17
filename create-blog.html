@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +24,17 @@
                 BlogSpace
             </a>
 
-            <nav class="nav-links">
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+            <nav class="nav-links" id="navLinks">
 
                 <a href="index.html">
                     Home
@@ -33,12 +44,24 @@
                     Explore
                 </a>
 
-                <a href="dashboard.html">
+                <a href="dashboard.html" id="dashboardNavLink">
                     Dashboard
                 </a>
 
                 <a href="create-blog.html" class="nav-button active">
                     Create Blog
+                </a>
+
+                <a href="login.html" id="loginNavLink">
+                    Login
+                </a>
+
+                <a href="register.html" id="signupNavLink">
+                    Sign Up
+                </a>
+
+                <a href="#" id="logoutButton">
+                    Logout
                 </a>
 
             </nav>
@@ -70,13 +93,13 @@
             </div>
 
 
+            <!-- Blog Form -->
             <form
                 class="blog-form"
                 id="blogForm"
             >
 
                 <!-- Title -->
-
                 <div class="form-group">
 
                     <label for="blogTitle">
@@ -86,7 +109,10 @@
                     <input
                         type="text"
                         id="blogTitle"
+                        name="title"
                         placeholder="Enter your blog title"
+                        minlength="5"
+                        maxlength="150"
                         required
                     >
 
@@ -94,7 +120,6 @@
 
 
                 <!-- Category -->
-
                 <div class="form-group">
 
                     <label for="blogCategory">
@@ -103,6 +128,7 @@
 
                     <select
                         id="blogCategory"
+                        name="category"
                         required
                     >
 
@@ -136,7 +162,6 @@
 
 
                 <!-- Content -->
-
                 <div class="form-group">
 
                     <label for="blogContent">
@@ -145,8 +170,10 @@
 
                     <textarea
                         id="blogContent"
+                        name="content"
                         rows="15"
                         placeholder="Start writing your blog..."
+                        minlength="20"
                         required
                     ></textarea>
 
@@ -154,7 +181,6 @@
 
 
                 <!-- Actions -->
-
                 <div class="blog-form-actions">
 
                     <a
@@ -167,4 +193,37 @@
                     <button
                         type="button"
                         class="secondary-button"
-                       
+                        id="saveDraftButton"
+                        disabled
+                    >
+                        Save Draft
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Publish Blog
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 BlogSpace. All rights reserved.</p>
+    </footer>
+
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

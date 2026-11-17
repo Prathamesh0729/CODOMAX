@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,25 +25,28 @@
 
 </head>
 
-
 <body>
 
-
     <!-- Navigation -->
-
     <header class="navbar">
 
         <div class="container navbar-container">
 
-            <a
-                href="index.html"
-                class="logo"
-            >
+            <a href="index.html" class="logo">
                 BlogSpace
             </a>
 
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
 
-            <nav class="nav-links">
+            <nav class="nav-links" id="navLinks">
 
                 <a href="index.html">
                     Home
@@ -52,15 +56,28 @@
                     Explore
                 </a>
 
-                <a href="login.html">
+                <a href="dashboard.html" id="dashboardNavLink">
+                    Dashboard
+                </a>
+
+                <a href="create-blog.html">
+                    Write a Blog
+                </a>
+
+                <a href="login.html" id="loginNavLink">
                     Login
                 </a>
 
                 <a
                     href="register.html"
                     class="nav-button"
+                    id="signupNavLink"
                 >
                     Sign Up
+                </a>
+
+                <a href="#" id="logoutButton">
+                    Logout
                 </a>
 
             </nav>
@@ -70,41 +87,35 @@
     </header>
 
 
-
     <!-- Blog Details -->
-
     <main class="blog-details-page">
 
         <div class="container">
-
 
             <article
                 class="blog-details"
                 id="blogDetails"
             >
 
-                <!-- Blog content will be inserted by JavaScript -->
+                <div class="blog-loading">
+                    <p>Loading blog...</p>
+                </div>
 
             </article>
-
 
         </div>
 
     </main>
 
 
-
     <!-- Footer -->
-
     <footer class="footer">
 
         <div class="container footer-content">
 
             <div>
 
-                <h3>
-                    BlogSpace
-                </h3>
+                <h3>BlogSpace</h3>
 
                 <p>
                     A place to write,
@@ -113,9 +124,8 @@
 
             </div>
 
-
             <p>
-                © 2026 BlogSpace.
+                &copy; 2026 BlogSpace.
                 All rights reserved.
             </p>
 
@@ -124,7 +134,7 @@
     </footer>
 
 
-
+    <!-- JavaScript -->
     <script src="js/main.js"></script>
 
 </body>
