@@ -1,9 +1,10 @@
-/* =========================================
+storage/* =========================================
    BLOGSPACE - MAIN JAVASCRIPT
    API-integrated frontend
 ========================================= */
 
-
+// Use the shared API URL declared in auth.js
+const API_BASE_URL = "https://codomax-blog-api-kyyo.onrender.com/api";
 
 
 /* =========================================
@@ -52,6 +53,7 @@ function clearAuthData() {
     localStorage.removeItem("blogSpaceUser");
 }
 
+
 async function apiRequest(endpoint, options = {}) {
     const token = getAuthToken();
 
@@ -60,6 +62,7 @@ async function apiRequest(endpoint, options = {}) {
         ...(options.headers || {})
     };
 
+    // Attach authentication token when available
     if (token) {
         headers.Authorization = `Bearer ${token}`;
     }
@@ -67,25 +70,33 @@ async function apiRequest(endpoint, options = {}) {
     let response;
 
     try {
-        response = await fetch(`${API_URL}${endpoint}`, {
+        // Use API_BASE_URL declared in main.js
+        response = await fetch(`${API_BASE_URL}${endpoint}`, {
             ...options,
             headers
         });
     } catch (error) {
+        console.error("API connection error:", error);
+
         throw new Error(
-            "Cannot connect to the BlogSpace server. Make sure the backend is running on port 5000."
+            "Cannot connect to the BlogSpace server. Please check your internet connection and try again."
         );
     }
 
+    // Parse server response
     const data = await response.json().catch(() => ({}));
 
+    // Handle unsuccessful responses
     if (!response.ok) {
         if (response.status === 401) {
             clearAuthData();
 
             const page = window.location.pathname.split("/").pop();
 
-            if (page === "dashboard.html" || page === "create-blog.html") {
+            if (
+                page === "dashboard.html" ||
+                page === "create-blog.html"
+            ) {
                 window.location.href = "login.html";
             }
         }
@@ -95,6 +106,7 @@ async function apiRequest(endpoint, options = {}) {
 
     return data;
 }
+
 
 /* =========================================
    GENERAL HELPERS
