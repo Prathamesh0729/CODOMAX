@@ -42,7 +42,7 @@ if (registerForm) {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/register`, {
+            const response = await fetch(`${API_URL}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -111,7 +111,7 @@ if (loginForm) {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -132,7 +132,7 @@ if (loginForm) {
                 throw new Error("Invalid login response from server.");
             }
 
-            // Clear previous authentication data first.
+            // Clear previous authentication data.
             localStorage.removeItem("token");
             localStorage.removeItem("user");
 
