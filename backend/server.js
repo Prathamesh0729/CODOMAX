@@ -1,7 +1,6 @@
-
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 
 // Import configuration and routes
 const connectDB = require("./config/db");
@@ -11,7 +10,15 @@ const blogRoutes = require("./routes/blogRoutes");
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: [
+        "https://codomax-blogspace-bgz3.onrender.com"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.options(/.*/, cors());
 app.use(express.json());
 
 // API Routes
