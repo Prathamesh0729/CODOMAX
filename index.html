@@ -6,12 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="BlogSpace - Write, publish, and discover meaningful stories."
-    >
+    <meta name="description" content="Create your BlogSpace account and start sharing your ideas.">
 
-    <title>BlogSpace | Home</title>
+    <title>BlogSpace | Register</title>
 
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -22,9 +19,7 @@
     <header class="navbar">
         <div class="container navbar-container">
 
-            <a href="index.html" class="logo">
-                BlogSpace
-            </a>
+            <a href="index.html" class="logo">BlogSpace</a>
 
             <button
                 class="menu-toggle"
@@ -39,219 +34,107 @@
                 <span></span>
             </button>
 
-            <nav
-                class="nav-links"
-                id="navLinks"
-                aria-label="Main navigation"
-            >
-
-                <a href="index.html" class="active">Home</a>
-
-                <a href="#featured">Explore</a>
-
-                <a href="login.html" id="loginNavLink">
-                    Login
-                </a>
-
-                <a
-                    href="register.html"
-                    class="nav-button"
-                    id="signupNavLink"
-                >
-                    Sign Up
-                </a>
-
-                <a
-                    href="dashboard.html"
-                    id="dashboardNavLink"
-                    class="hidden-nav-link"
-                >
-                    Dashboard
-                </a>
-
-                <a
-                    href="#"
-                    id="logoutButton"
-                    class="hidden-nav-link"
-                >
-                    Logout
-                </a>
-
+            <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="index.html#featured">Explore</a>
+                <a href="login.html" id="loginNavLink">Login</a>
+                <a href="register.html" class="nav-button" id="signupNavLink">Sign Up</a>
+                <a href="dashboard.html" id="dashboardNavLink" class="hidden-nav-link">Dashboard</a>
+                <a href="#" id="logoutButton" class="hidden-nav-link">Logout</a>
             </nav>
+
         </div>
     </header>
 
+    <!-- REGISTRATION SECTION -->
+    <main class="auth-page">
 
-    <!-- MAIN CONTENT -->
-    <main>
+        <div class="auth-container">
 
-        <!-- HERO SECTION -->
-        <section class="hero">
-            <div class="container hero-content">
-
-                <div class="hero-text">
-
-                    <p class="hero-label">
-                        WELCOME TO BLOGSPACE
-                    </p>
-
-                    <h1>
-                        Share Your Ideas
-                        <span>With The World.</span>
-                    </h1>
-
-                    <p class="hero-description">
-                        Write, publish, and discover
-                        meaningful stories from people
-                        around the world.
-                    </p>
-
-                    <div class="hero-actions">
-
-                        <a
-                            href="create-blog.html"
-                            class="primary-button"
-                        >
-                            Start Writing
-                        </a>
-
-                        <a
-                            href="#featured"
-                            class="secondary-button"
-                        >
-                            Explore Blogs
-                        </a>
-
-                    </div>
-
-                </div>
+            <div class="auth-heading">
+                <p class="section-label">GET STARTED</p>
+                <h1>Create Your Account</h1>
+                <p>Join BlogSpace and start sharing your ideas.</p>
             </div>
-        </section>
 
+            <form id="registerForm" method="POST">
 
-        <!-- FEATURED BLOGS -->
-        <section
-            class="featured-section"
-            id="featured"
-        >
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <p class="section-label">
-                        DISCOVER
-                    </p>
-
-                    <h2>Featured Blogs</h2>
-
-                    <p>
-                        Explore interesting ideas,
-                        stories, and perspectives
-                        from our community.
-                    </p>
-
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
                 </div>
 
-
-                <!-- BLOG SEARCH AND FILTERS -->
-                <div class="blog-filters">
-
-                    <div class="search-box">
-
-                        <input
-                            type="search"
-                            id="blogSearch"
-                            placeholder="Search blogs by title or content..."
-                            aria-label="Search blogs by title or content"
-                        >
-
-                    </div>
-
-                    <div class="filter-box">
-
-                        <select
-                            id="categoryFilter"
-                            aria-label="Filter blogs by category"
-                        >
-
-                            <option value="all">
-                                All Categories
-                            </option>
-
-                            <option value="Technology">
-                                Technology
-                            </option>
-
-                            <option value="Programming">
-                                Programming
-                            </option>
-
-                            <option value="Education">
-                                Education
-                            </option>
-
-                            <option value="Lifestyle">
-                                Lifestyle
-                            </option>
-
-                            <option value="Business">
-                                Business
-                            </option>
-
-                            <option value="General">
-                                General
-                            </option>
-
-                        </select>
-
-                    </div>
-
+                <div class="form-group">
+                    <label for="registerEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
                 </div>
 
-
-                <!-- BLOGS LOADED FROM MONGODB -->
-                <div
-                    class="blog-grid"
-                    id="homeBlogGrid"
-                >
-                    <p>Loading blogs...</p>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        required
+                    >
                 </div>
 
-            </div>
-        </section>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
 
-    </main>
+                <div class="form-group checkbox-group">
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        name="terms"
+                        required
+                    >
+                    <label for="terms">I agree to the terms</label>
+                </div>
 
+                <button type="submit" class="primary-button">
+                    Create Account
+                </button>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-
-        <div class="container footer-content">
-
-            <div>
-
-                <h3>BlogSpace</h3>
-
-                <p>
-                    A place to write, share,
-                    and discover ideas.
+                <p class="auth-footer">
+                    Already have an account?
+                    <a href="login.html">Login</a>
                 </p>
 
-            </div>
-
-            <p>
-                &copy; 2026 BlogSpace.
-                All rights reserved.
-            </p>
+            </form>
 
         </div>
 
-    </footer>
-
+    </main>
 
     <!-- JAVASCRIPT -->
     <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
 
 </body>
 </html>
