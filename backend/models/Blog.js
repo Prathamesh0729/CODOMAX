@@ -25,6 +25,12 @@ const blogSchema = new mongoose.Schema(
             default: ""
         },
 
+        status: {
+            type: String,
+            enum: ["draft", "published"],
+            default: "published"
+        },
+
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
@@ -36,6 +42,4 @@ const blogSchema = new mongoose.Schema(
     }
 );
 
-const Blog = mongoose.model("Blog", blogSchema);
-
-module.exports = Blog;
+module.exports = mongoose.model("Blog", blogSchema);

@@ -1,15 +1,23 @@
 
+const mongoose = require("mongoose");
 const Blog = require("../models/Blog");
 
 // CREATE BLOG
 const createBlog = async (req, res) => {
     try {
-        const { title, content, category, image } = req.body;
+        const { title, content, category, image, status } = req.body;
 
         if (!title || !content) {
             return res.status(400).json({
                 success: false,
-                message: "Title and content are required"
+                message: "Title and content are required."
+            });
+        }
+
+        if (status && !["draft", "published"].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Status must be draft or published."
             });
         }
 
@@ -18,29 +26,37 @@ const createBlog = async (req, res) => {
             content,
             category,
             image,
+            status: status || "published",
             author: req.user._id
         });
 
+        const populatedBlog = await Blog.findById(blog._id)
+            .populate("author", "name email");
+
         return res.status(201).json({
             success: true,
-            message: "Blog created successfully",
-            blog
+            message: "Blog created successfully.",
+            blog: populatedBlog
         });
-
     } catch (error) {
         console.error("Create blog error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Server error while creating blog"
+            message: "Server error while creating blog."
         });
     }
 };
 
-// GET ALL BLOGS
+// GET ALL PUBLISHED BLOGS (PUBLIC)
 const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find()
+        const blogs = await Blog.find({
+            $or: [
+                { status: "published" },
+                { status: { $exists: false } }
+            ]
+        })
             .populate("author", "name email")
             .sort({ createdAt: -1 });
 
@@ -49,27 +65,62 @@ const getAllBlogs = async (req, res) => {
             count: blogs.length,
             blogs
         });
-
     } catch (error) {
-        console.error("Get blogs error:", error);
+        console.error("Get all blogs error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Server error while fetching blogs"
+            message: "Server error while fetching blogs."
         });
     }
 };
 
-// GET SINGLE BLOG
+// GET LOGGED-IN USER'S BLOGS (DRAFTS + PUBLISHED)
+const getMyBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find({
+            author: req.user._id
+        })
+            .populate("author", "name email")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            count: blogs.length,
+            blogs
+        });
+    } catch (error) {
+        console.error("Get my blogs error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error while fetching your blogs."
+        });
+    }
+};
+
+// GET SINGLE PUBLISHED BLOG (PUBLIC)
 const getBlogById = async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id)
-            .populate("author", "name email");
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid blog ID."
+            });
+        }
+
+        const blog = await Blog.findOne({
+            _id: req.params.id,
+            $or: [
+                { status: "published" },
+                { status: { $exists: false } }
+            ]
+        }).populate("author", "name email");
 
         if (!blog) {
             return res.status(404).json({
                 success: false,
-                message: "Blog not found"
+                message: "Published blog not found."
             });
         }
 
@@ -77,13 +128,12 @@ const getBlogById = async (req, res) => {
             success: true,
             blog
         });
-
     } catch (error) {
-        console.error("Get blog error:", error);
+        console.error("Get blog by ID error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Server error while fetching blog"
+            message: "Server error while fetching blog."
         });
     }
 };
@@ -91,22 +141,35 @@ const getBlogById = async (req, res) => {
 // UPDATE BLOG
 const updateBlog = async (req, res) => {
     try {
-        const { title, content, category, image } = req.body;
+        const { title, content, category, image, status } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid blog ID."
+            });
+        }
+
+        if (status !== undefined && !["draft", "published"].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Status must be draft or published."
+            });
+        }
 
         const blog = await Blog.findById(req.params.id);
 
         if (!blog) {
             return res.status(404).json({
                 success: false,
-                message: "Blog not found"
+                message: "Blog not found."
             });
         }
 
-        // Check blog ownership
         if (blog.author.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
-                message: "You are not authorized to update this blog"
+                message: "You are not authorized to update this blog."
             });
         }
 
@@ -114,21 +177,24 @@ const updateBlog = async (req, res) => {
         if (content !== undefined) blog.content = content;
         if (category !== undefined) blog.category = category;
         if (image !== undefined) blog.image = image;
+        if (status !== undefined) blog.status = status;
 
         await blog.save();
 
+        const updatedBlog = await Blog.findById(blog._id)
+            .populate("author", "name email");
+
         return res.status(200).json({
             success: true,
-            message: "Blog updated successfully",
-            blog
+            message: "Blog updated successfully.",
+            blog: updatedBlog
         });
-
     } catch (error) {
         console.error("Update blog error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Server error while updating blog"
+            message: "Server error while updating blog."
         });
     }
 };
@@ -136,20 +202,26 @@ const updateBlog = async (req, res) => {
 // DELETE BLOG
 const deleteBlog = async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid blog ID."
+            });
+        }
+
         const blog = await Blog.findById(req.params.id);
 
         if (!blog) {
             return res.status(404).json({
                 success: false,
-                message: "Blog not found"
+                message: "Blog not found."
             });
         }
 
-        // Check blog ownership
         if (blog.author.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
-                message: "You are not authorized to delete this blog"
+                message: "You are not authorized to delete this blog."
             });
         }
 
@@ -157,23 +229,22 @@ const deleteBlog = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Blog deleted successfully"
+            message: "Blog deleted successfully."
         });
-
     } catch (error) {
         console.error("Delete blog error:", error);
 
         return res.status(500).json({
             success: false,
-            message: "Server error while deleting blog"
+            message: "Server error while deleting blog."
         });
     }
 };
 
-// EXPORT ALL CONTROLLERS
 module.exports = {
     createBlog,
     getAllBlogs,
+    getMyBlogs,
     getBlogById,
     updateBlog,
     deleteBlog

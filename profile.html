@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="View your BlogSpace account profile."
+    >
+
+    <title>My Profile | BlogSpace</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <a href="index.html" class="logo">
+                BlogSpace
+            </a>
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#featured">Explore Blogs</a>
+                <a href="create-blog.html">Write a Blog</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="profile.html" class="active">My Profile</a>
+                <a href="#" id="logoutButton">Logout</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- PROFILE PAGE -->
+    <main class="profile-page">
+
+        <section class="profile-header">
+            <p class="dashboard-subtitle">YOUR ACCOUNT</p>
+            <h1>My Profile</h1>
+            <p>View your personal account information.</p>
+        </section>
+
+        <section class="profile-card" id="profileCard">
+
+            <div class="profile-avatar" id="profileAvatar">
+                U
+            </div>
+
+            <div class="profile-information">
+
+                <h2 id="profileName">Loading profile...</h2>
+
+                <p class="profile-email" id="profileEmail">
+                    Please wait while we fetch your information.
+                </p>
+
+                <div class="profile-details">
+
+                    <div class="profile-detail-item">
+                        <span>Full Name</span>
+                        <strong id="profileFullName">Loading...</strong>
+                    </div>
+
+                    <div class="profile-detail-item">
+                        <span>Email Address</span>
+                        <strong id="profileEmailDetail">Loading...</strong>
+                    </div>
+
+                    <div class="profile-detail-item">
+                        <span>Account Status</span>
+                        <strong>Active</strong>
+                    </div>
+
+                </div>
+
+                <div class="profile-actions">
+
+                    <a
+                        href="dashboard.html"
+                        class="primary-button"
+                    >
+                        Go to Dashboard
+                    </a>
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="profileLogoutButton"
+                    >
+                        Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <div
+            id="profileMessage"
+            class="profile-message"
+            role="status"
+        ></div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>&copy; 2026 BlogSpace. All rights reserved.</p>
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>

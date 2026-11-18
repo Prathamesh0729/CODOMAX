@@ -4,7 +4,6 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
@@ -21,7 +20,6 @@
 
     <!-- NAVIGATION -->
     <header class="navbar">
-
         <div class="container navbar-container">
 
             <a href="index.html" class="logo">
@@ -47,13 +45,9 @@
                 aria-label="Main navigation"
             >
 
-                <a href="index.html" class="active">
-                    Home
-                </a>
+                <a href="index.html" class="active">Home</a>
 
-                <a href="#featured">
-                    Explore
-                </a>
+                <a href="#featured">Explore</a>
 
                 <a href="login.html" id="loginNavLink">
                     Login
@@ -84,9 +78,7 @@
                 </a>
 
             </nav>
-
         </div>
-
     </header>
 
 
@@ -95,7 +87,6 @@
 
         <!-- HERO SECTION -->
         <section class="hero">
-
             <div class="container hero-content">
 
                 <div class="hero-text">
@@ -106,9 +97,7 @@
 
                     <h1>
                         Share Your Ideas
-                        <span>
-                            With The World.
-                        </span>
+                        <span>With The World.</span>
                     </h1>
 
                     <p class="hero-description">
@@ -136,9 +125,7 @@
                     </div>
 
                 </div>
-
             </div>
-
         </section>
 
 
@@ -156,9 +143,7 @@
                         DISCOVER
                     </p>
 
-                    <h2>
-                        Featured Blogs
-                    </h2>
+                    <h2>Featured Blogs</h2>
 
                     <p>
                         Explore interesting ideas,
@@ -168,18 +153,72 @@
 
                 </div>
 
-                <!-- Blogs loaded from MongoDB -->
+
+                <!-- BLOG SEARCH AND FILTERS -->
+                <div class="blog-filters">
+
+                    <div class="search-box">
+
+                        <input
+                            type="search"
+                            id="blogSearch"
+                            placeholder="Search blogs by title or content..."
+                            aria-label="Search blogs by title or content"
+                        >
+
+                    </div>
+
+                    <div class="filter-box">
+
+                        <select
+                            id="categoryFilter"
+                            aria-label="Filter blogs by category"
+                        >
+
+                            <option value="all">
+                                All Categories
+                            </option>
+
+                            <option value="Technology">
+                                Technology
+                            </option>
+
+                            <option value="Programming">
+                                Programming
+                            </option>
+
+                            <option value="Education">
+                                Education
+                            </option>
+
+                            <option value="Lifestyle">
+                                Lifestyle
+                            </option>
+
+                            <option value="Business">
+                                Business
+                            </option>
+
+                            <option value="General">
+                                General
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BLOGS LOADED FROM MONGODB -->
                 <div
                     class="blog-grid"
                     id="homeBlogGrid"
                 >
-
                     <p>Loading blogs...</p>
-
                 </div>
 
             </div>
-
         </section>
 
     </main>
@@ -215,5 +254,4 @@
     <script src="js/main.js"></script>
 
 </body>
-
 </html>

@@ -145,7 +145,8 @@ const currentPage = window.location.pathname.split("/").pop();
 
 const protectedPages = [
     "dashboard.html",
-    "create-blog.html"
+    "create-blog.html",
+    "profile.html"
 ];
 
 if (protectedPages.includes(currentPage) && !isLoggedIn()) {
@@ -238,6 +239,7 @@ if (logoutButton) {
     });
 }
 
+
 /* =========================================
    DASHBOARD
 ========================================= */
@@ -249,9 +251,7 @@ async function loadDashboard() {
 
     const user = getUser();
 
-    if (user && dashboardUserName) {
-        dashboardUserName.textContent = user.name || "Writer";
-    }
+    dashboardUserName.textContent = user?.name || "Writer";
 
     const totalBlogsElement = document.getElementById("totalBlogs");
     const publishedBlogsElement = document.getElementById("publishedBlogs");
@@ -264,41 +264,34 @@ async function loadDashboard() {
     }
 
     try {
-        const response = await apiRequest("/blogs");
+        // Fetch only the logged-in user's blogs.
+        const response = await apiRequest("/blogs/my-blogs");
 
-        const allBlogs = Array.isArray(response.blogs)
+        const myBlogs = Array.isArray(response.blogs)
             ? response.blogs
             : [];
 
-        const currentUserId = user && (user._id || user.id);
+        const publishedBlogs = myBlogs.filter(
+            blog => !blog.status || blog.status === "published"
+        );
 
-        const myBlogs = allBlogs.filter((blog) => {
-            const authorId =
-                blog.author && typeof blog.author === "object"
-                    ? blog.author._id
-                    : blog.author;
-
-            return currentUserId && authorId
-                ? String(authorId) === String(currentUserId)
-                : false;
-        });
+        const draftBlogs = myBlogs.filter(
+            blog => blog.status === "draft"
+        );
 
         if (totalBlogsElement) {
             totalBlogsElement.textContent = myBlogs.length;
         }
 
-        // The current backend does not implement draft/published status.
         if (publishedBlogsElement) {
-            publishedBlogsElement.textContent = myBlogs.length;
+            publishedBlogsElement.textContent = publishedBlogs.length;
         }
 
         if (draftBlogsElement) {
-            draftBlogsElement.textContent = "0";
+            draftBlogsElement.textContent = draftBlogs.length;
         }
 
-        if (!dashboardEmpty || !blogManagementList) {
-            return;
-        }
+        if (!dashboardEmpty || !blogManagementList) return;
 
         blogManagementList.innerHTML = "";
 
@@ -311,28 +304,45 @@ async function loadDashboard() {
 
         myBlogs
             .slice()
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .forEach((blog) => {
+            .sort((a, b) =>
+                new Date(b.updatedAt || b.createdAt) -
+                new Date(a.updatedAt || a.createdAt)
+            )
+            .forEach(blog => {
                 const card = document.createElement("div");
                 card.className = "management-card";
+
+                const status = blog.status || "published";
+                const statusClass = status === "draft"
+                    ? "draft"
+                    : "published";
 
                 card.innerHTML = `
                     <div class="management-info">
                         <h3>${escapeHTML(blog.title)}</h3>
+
                         <p>
                             ${escapeHTML(blog.category || "General")}
                             ·
-                            <span class="published">Published</span>
+                            <span class="${statusClass}">
+                                ${escapeHTML(status)}
+                            </span>
                         </p>
-                        <small>${formatDate(blog.updatedAt || blog.createdAt)}</small>
+
+                        <small>
+                            ${formatDate(blog.updatedAt || blog.createdAt)}
+                        </small>
                     </div>
 
                     <div class="management-actions">
-                        <button
-                            class="view-button"
-                            data-id="${escapeHTML(blog._id)}"
-                            type="button"
-                        >View</button>
+
+                        ${status === "published" ? `
+                            <button
+                                class="view-button"
+                                data-id="${escapeHTML(blog._id)}"
+                                type="button"
+                            >View</button>
+                        ` : ""}
 
                         <button
                             class="edit-button"
@@ -351,21 +361,21 @@ async function loadDashboard() {
                 blogManagementList.appendChild(card);
             });
 
-        blogManagementList.querySelectorAll(".view-button").forEach((button) => {
+        blogManagementList.querySelectorAll(".view-button").forEach(button => {
             button.addEventListener("click", () => {
                 window.location.href =
                     `blog.html?id=${encodeURIComponent(button.dataset.id)}`;
             });
         });
 
-        blogManagementList.querySelectorAll(".edit-button").forEach((button) => {
+        blogManagementList.querySelectorAll(".edit-button").forEach(button => {
             button.addEventListener("click", () => {
                 localStorage.setItem("editingBlogId", button.dataset.id);
                 window.location.href = "create-blog.html";
             });
         });
 
-        blogManagementList.querySelectorAll(".delete-button").forEach((button) => {
+        blogManagementList.querySelectorAll(".delete-button").forEach(button => {
             button.addEventListener("click", async () => {
                 const confirmed = confirm("Delete this blog permanently?");
                 if (!confirmed) return;
@@ -386,6 +396,7 @@ async function loadDashboard() {
                 }
             });
         });
+
     } catch (error) {
         console.error("Dashboard loading error:", error);
 
@@ -398,6 +409,8 @@ async function loadDashboard() {
 }
 
 loadDashboard();
+
+
 
 /* =========================================
    CREATE / EDIT BLOG
@@ -414,28 +427,48 @@ if (blogForm) {
     const editingBlogId = localStorage.getItem("editingBlogId");
     const submitButton = blogForm.querySelector('button[type="submit"]');
 
+    let currentBlogStatus = "published";
+
     async function loadBlogForEditing() {
         if (!editingBlogId) return;
 
         try {
-            const response = await apiRequest(
-                `/blogs/${encodeURIComponent(editingBlogId)}`
+            // Fetch the user's blogs so their drafts can also be edited.
+            const response = await apiRequest("/blogs/my-blogs");
+
+            const blogs = Array.isArray(response.blogs)
+                ? response.blogs
+                : [];
+
+            const blog = blogs.find(
+                item => String(item._id) === String(editingBlogId)
             );
 
-            const blog = response.blog;
-
             if (!blog) {
-                throw new Error("Blog not found.");
+                throw new Error("Blog not found or you are not authorized to edit it.");
             }
 
             if (titleInput) titleInput.value = blog.title || "";
             if (categoryInput) categoryInput.value = blog.category || "General";
             if (contentInput) contentInput.value = blog.content || "";
 
+            currentBlogStatus = blog.status || "published";
+
             const heading = document.querySelector(".create-blog-header h1");
 
-            if (heading) heading.textContent = "Edit Your Blog";
-            if (submitButton) submitButton.textContent = "Update Blog";
+            if (heading) {
+                heading.textContent = "Edit Your Blog";
+            }
+
+            if (submitButton) {
+                submitButton.textContent = "Publish Blog";
+            }
+
+            if (saveDraftButton) {
+                saveDraftButton.disabled = false;
+                saveDraftButton.textContent = "Save as Draft";
+            }
+
         } catch (error) {
             alert(error.message);
             localStorage.removeItem("editingBlogId");
@@ -445,7 +478,7 @@ if (blogForm) {
 
     loadBlogForEditing();
 
-    async function saveBlog() {
+    async function saveBlog(status) {
         const title = titleInput ? titleInput.value.trim() : "";
         const category = categoryInput ? categoryInput.value : "General";
         const content = contentInput ? contentInput.value.trim() : "";
@@ -463,14 +496,19 @@ if (blogForm) {
         const blogPayload = {
             title,
             category: category || "General",
-            content
+            content,
+            status
         };
 
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.textContent = editingBlogId
-                ? "Updating..."
+            submitButton.textContent = status === "draft"
+                ? "Saving Draft..."
                 : "Publishing...";
+        }
+
+        if (saveDraftButton) {
+            saveDraftButton.disabled = true;
         }
 
         try {
@@ -484,65 +522,96 @@ if (blogForm) {
                 );
 
                 localStorage.removeItem("editingBlogId");
-                alert("Blog updated successfully.");
+
+                alert(
+                    status === "draft"
+                        ? "Your changes have been saved as a draft."
+                        : "Your blog has been published successfully."
+                );
+
             } else {
                 await apiRequest("/blogs", {
                     method: "POST",
                     body: JSON.stringify(blogPayload)
                 });
 
-                alert("Your blog has been published!");
+                alert(
+                    status === "draft"
+                        ? "Your blog has been saved as a draft."
+                        : "Your blog has been published successfully."
+                );
             }
 
             window.location.href = "dashboard.html";
+
         } catch (error) {
             alert(error.message);
 
             if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.textContent = editingBlogId
-                    ? "Update Blog"
-                    : "Publish Blog";
+                submitButton.textContent = "Publish Blog";
+            }
+
+            if (saveDraftButton) {
+                saveDraftButton.disabled = false;
             }
         }
     }
 
-    blogForm.addEventListener("submit", (event) => {
+    // Publishing or updating as published.
+    blogForm.addEventListener("submit", event => {
         event.preventDefault();
-        saveBlog();
+        saveBlog("published");
     });
 
-    // Drafts are not supported by the current backend Blog model/API.
+    // Save as draft.
     if (saveDraftButton) {
-        saveDraftButton.disabled = true;
-        saveDraftButton.title =
-            "Draft saving is not supported by the current backend.";
+        saveDraftButton.disabled = false;
+
+        saveDraftButton.addEventListener("click", event => {
+            event.preventDefault();
+            saveBlog("draft");
+        });
     }
 }
+
+
 
 /* =========================================
    HOME PAGE - PUBLISHED BLOGS
 ========================================= */
 
 const homeBlogGrid = document.getElementById("homeBlogGrid");
+const blogSearchInput = document.getElementById("blogSearch");
+const categoryFilter = document.getElementById("categoryFilter");
 
-async function loadHomeBlogs() {
+let allHomeBlogs = [];
+
+// Render blog cards
+function renderHomeBlogs(blogs) {
     if (!homeBlogGrid) return;
 
-    homeBlogGrid.innerHTML = "<p>Loading blogs...</p>";
+    homeBlogGrid.innerHTML = "";
 
-    try {
-        const response = await apiRequest("/blogs");
+    // No matching blogs
+    if (blogs.length === 0) {
 
-        const blogs = Array.isArray(response.blogs)
-            ? response.blogs
-            : [];
+        const hasFilters =
+            (blogSearchInput && blogSearchInput.value.trim() !== "") ||
+            (categoryFilter && categoryFilter.value !== "all");
 
-        if (blogs.length === 0) {
+        if (hasFilters) {
+            showPageMessage(
+                homeBlogGrid,
+                "No blogs match your search or selected category.",
+                "home-empty-state"
+            );
+        } else {
             homeBlogGrid.innerHTML = `
                 <div class="home-empty-state">
                     <h3>No blogs yet</h3>
                     <p>Be the first to share your ideas with the community.</p>
+
                     <a
                         href="${isLoggedIn() ? "create-blog.html" : "register.html"}"
                         class="primary-button"
@@ -551,64 +620,171 @@ async function loadHomeBlogs() {
                     </a>
                 </div>
             `;
-            return;
         }
 
-        homeBlogGrid.innerHTML = "";
-
-        blogs.forEach((blog) => {
-            const preview = (blog.content || "").length > 130
-                ? `${blog.content.substring(0, 130)}...`
-                : (blog.content || "");
-
-            const card = document.createElement("article");
-            card.className = "blog-card";
-            card.tabIndex = 0;
-            card.setAttribute("role", "button");
-
-            card.innerHTML = `
-                <div class="blog-image">
-                    <span>${escapeHTML(blog.category || "General")}</span>
-                </div>
-
-                <div class="blog-content">
-                    <p class="blog-category">
-                        ${escapeHTML(blog.category || "General")}
-                    </p>
-
-                    <h3>${escapeHTML(blog.title)}</h3>
-                    <p>${escapeHTML(preview)}</p>
-
-                    <div class="blog-footer">
-                        <span>${formatDate(blog.createdAt)}</span>
-                        <span>Read More →</span>
-                    </div>
-                </div>
-            `;
-
-            const openBlog = () => {
-                window.location.href =
-                    `blog.html?id=${encodeURIComponent(blog._id)}`;
-            };
-
-            card.addEventListener("click", openBlog);
-
-            card.addEventListener("keydown", (event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    openBlog();
-                }
-            });
-
-            homeBlogGrid.appendChild(card);
-        });
-    } catch (error) {
-        console.error("Home blogs loading error:", error);
-        showPageMessage(homeBlogGrid, error.message, "home-empty-state");
+        return;
     }
+
+    // Create blog cards
+    blogs.forEach((blog) => {
+
+        const content = blog.content || "";
+
+        const preview = content.length > 130
+            ? content.substring(0, 130) + "..."
+            : content;
+
+        const card = document.createElement("article");
+
+        card.className = "blog-card";
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+
+        card.setAttribute(
+            "aria-label",
+            `Read blog: ${blog.title || "Untitled blog"}`
+        );
+
+        card.innerHTML = `
+            <div class="blog-image">
+                <span>${escapeHTML(blog.category || "General")}</span>
+            </div>
+
+            <div class="blog-content">
+
+                <p class="blog-category">
+                    ${escapeHTML(blog.category || "General")}
+                </p>
+
+                <h3>${escapeHTML(blog.title)}</h3>
+
+                <p>${escapeHTML(preview)}</p>
+
+                <div class="blog-footer">
+                    <span>${formatDate(blog.createdAt)}</span>
+                    <span>Read More →</span>
+                </div>
+
+            </div>
+        `;
+
+        // Open blog details
+        const openBlog = () => {
+            window.location.href =
+                `blog.html?id=${encodeURIComponent(blog._id)}`;
+        };
+
+        card.addEventListener("click", openBlog);
+
+        card.addEventListener("keydown", (event) => {
+
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openBlog();
+            }
+
+        });
+
+        homeBlogGrid.appendChild(card);
+
+    });
 }
 
+
+// Search and category filtering
+function filterHomeBlogs() {
+
+    const searchTerm = blogSearchInput
+        ? blogSearchInput.value.trim().toLowerCase()
+        : "";
+
+    const selectedCategory = categoryFilter
+        ? categoryFilter.value
+        : "all";
+
+    const filteredBlogs = allHomeBlogs.filter((blog) => {
+
+        const title = (blog.title || "").toLowerCase();
+
+        const content = (blog.content || "").toLowerCase();
+
+        const category = (blog.category || "General").toLowerCase();
+
+        // Match title or content
+        const matchesSearch =
+            title.includes(searchTerm) ||
+            content.includes(searchTerm);
+
+        // Match selected category
+        const matchesCategory =
+            selectedCategory === "all" ||
+            category === selectedCategory.toLowerCase();
+
+        return matchesSearch && matchesCategory;
+
+    });
+
+    renderHomeBlogs(filteredBlogs);
+}
+
+
+// Fetch published blogs from backend
+async function loadHomeBlogs() {
+
+    if (!homeBlogGrid) return;
+
+    homeBlogGrid.innerHTML = "<p>Loading blogs...</p>";
+
+    try {
+
+        const response = await apiRequest("/blogs");
+
+        allHomeBlogs = Array.isArray(response.blogs)
+            ? response.blogs
+            : [];
+
+        filterHomeBlogs();
+
+    } catch (error) {
+
+        console.error("Home blogs loading error:", error);
+
+        showPageMessage(
+            homeBlogGrid,
+            error.message,
+            "home-empty-state"
+        );
+
+    }
+
+}
+
+
+// Search input event
+if (blogSearchInput) {
+
+    blogSearchInput.addEventListener(
+        "input",
+        filterHomeBlogs
+    );
+
+}
+
+
+// Category selection event
+if (categoryFilter) {
+
+    categoryFilter.addEventListener(
+        "change",
+        filterHomeBlogs
+    );
+
+}
+
+
+// Initialize homepage
 loadHomeBlogs();
+
 
 /* =========================================
    BLOG DETAILS PAGE
@@ -713,4 +889,100 @@ if (
     !document.getElementById("blogForm")
 ) {
     localStorage.removeItem("editingBlogId");
+}
+
+/* =========================================
+   USER PROFILE
+========================================= */
+
+const profileCard = document.getElementById("profileCard");
+
+async function loadUserProfile() {
+
+    if (!profileCard) return;
+
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profileFullName = document.getElementById("profileFullName");
+    const profileEmailDetail = document.getElementById("profileEmailDetail");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileMessage = document.getElementById("profileMessage");
+
+    try {
+
+        // Fetch authenticated user's profile from backend
+        const response = await apiRequest("/auth/profile");
+
+        const user = response.user;
+
+        if (!user) {
+            throw new Error("Unable to retrieve your profile.");
+        }
+
+        // Display user information
+        if (profileName) {
+            profileName.textContent = user.name || "BlogSpace User";
+        }
+
+        if (profileEmail) {
+            profileEmail.textContent = user.email || "No email available";
+        }
+
+        if (profileFullName) {
+            profileFullName.textContent = user.name || "Not available";
+        }
+
+        if (profileEmailDetail) {
+            profileEmailDetail.textContent = user.email || "Not available";
+        }
+
+        // Generate avatar initial
+        if (profileAvatar) {
+            const initial = (user.name || "U").trim().charAt(0);
+            profileAvatar.textContent = initial.toUpperCase();
+        }
+
+        if (profileMessage) {
+            profileMessage.textContent = "";
+        }
+
+    } catch (error) {
+
+        console.error("Profile loading error:", error);
+
+        if (profileMessage) {
+            profileMessage.textContent = error.message;
+        }
+
+        if (profileName) {
+            profileName.textContent = "Profile unavailable";
+        }
+
+        if (profileEmail) {
+            profileEmail.textContent = "Unable to load account information.";
+        }
+
+    }
+}
+
+loadUserProfile();
+
+
+// Profile page logout button
+const profileLogoutButton = document.getElementById("profileLogoutButton");
+
+if (profileLogoutButton) {
+
+    profileLogoutButton.addEventListener("click", () => {
+
+        const confirmed = confirm("Are you sure you want to logout?");
+
+        if (!confirmed) return;
+
+        clearAuthData();
+
+        window.location.href = "login.html";
+
+    });
+
 }

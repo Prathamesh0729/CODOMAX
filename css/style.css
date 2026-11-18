@@ -1535,3 +1535,358 @@ button:disabled {
 .nav-links .hidden-nav-link {
     display: none !important;
 }
+
+/* =========================================
+   BLOG SEARCH AND CATEGORY FILTERS
+========================================= */
+
+.blog-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.search-box {
+    flex: 1;
+}
+
+.search-box input,
+.filter-box select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    background: #fff;
+}
+
+.search-box input:focus,
+.filter-box select:focus {
+    border-color: #555;
+}
+
+.filter-box {
+    width: 220px;
+}
+
+@media (max-width: 600px) {
+
+    .blog-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-box {
+        width: 100%;
+    }
+
+}
+
+/* =========================================
+   USER PROFILE PAGE
+========================================= */
+
+.profile-page {
+    max-width: 950px;
+    width: 90%;
+    margin: 60px auto;
+    min-height: 55vh;
+}
+
+.profile-header {
+    margin-bottom: 30px;
+}
+
+.profile-header h1 {
+    font-size: 36px;
+    margin: 10px 0;
+}
+
+.profile-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 35px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    border-radius: 50%;
+    background: #222;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    font-weight: 700;
+}
+
+.profile-information {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-information h2 {
+    font-size: 26px;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+}
+
+.profile-email {
+    color: #777;
+    margin-bottom: 25px;
+    overflow-wrap: anywhere;
+}
+
+.profile-details {
+    border-top: 1px solid #eee;
+}
+
+.profile-detail-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-detail-item span {
+    color: #777;
+}
+
+.profile-detail-item strong {
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.profile-actions button {
+    cursor: pointer;
+    font: inherit;
+}
+
+.profile-message {
+    margin-top: 20px;
+    color: #c0392b;
+}
+
+@media (max-width: 600px) {
+
+    .profile-page {
+        margin: 35px auto;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        padding: 25px 20px;
+        gap: 20px;
+    }
+
+    .profile-header h1 {
+        font-size: 29px;
+    }
+
+    .profile-detail-item {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .profile-detail-item strong {
+        text-align: left;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+    }
+
+    .profile-actions a,
+    .profile-actions button {
+        width: 100%;
+        text-align: center;
+    }
+
+}
+
+/* =========================================
+   CODOMAX - RESPONSIVE IMPROVEMENTS
+========================================= */
+
+/* Dashboard navigation compatibility */
+.nav-container {
+    width: min(1120px, 90%);
+    margin: 0 auto;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Consistent dashboard content width */
+.dashboard-page {
+    max-width: 1120px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* Better tablet blog grid */
+@media (min-width: 601px) and (max-width: 800px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-stats .stat-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Better small-screen layout */
+@media (max-width: 600px) {
+
+    .container {
+        width: 92%;
+    }
+
+    .dashboard-page {
+        width: 92%;
+        padding: 40px 0;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-bottom: 40px;
+    }
+
+    .dashboard-section-header {
+        gap: 15px;
+    }
+
+    .management-card {
+        width: 100%;
+        padding: 16px;
+    }
+
+    .management-info {
+        width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .management-actions {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .management-actions button {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .blog-filters {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .search-box,
+    .filter-box {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .search-box input,
+    .filter-box select {
+        min-width: 0;
+    }
+
+    .profile-page {
+        width: 92%;
+    }
+
+    .profile-card {
+        width: 100%;
+    }
+
+    .auth-form,
+    .blog-form {
+        width: 100%;
+    }
+
+    .footer-content {
+        gap: 20px;
+    }
+}
+
+/* Extra-small mobile screens */
+@media (max-width: 380px) {
+
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+        letter-spacing: -1.5px;
+    }
+
+    .section-heading h2 {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .profile-card {
+        padding: 20px 15px;
+    }
+
+    .management-actions {
+        flex-direction: column;
+    }
+
+    .management-actions button {
+        width: 100%;
+    }
+}
+
+/* Prevent unwanted horizontal overflow */
+img,
+video,
+iframe {
+    max-width: 100%;
+}
+
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+.management-card,
+.profile-card,
+.blog-card {
+    min-width: 0;
+}
+
