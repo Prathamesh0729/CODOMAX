@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_URL = "https://codomax-blog-api-kyyo.onrender.com/api";
 
 /* =========================================
    USER REGISTRATION
